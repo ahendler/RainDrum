@@ -13,5 +13,6 @@ class Drum {
         static const int STEPS_PER_REV;
         static const int STEPS_PER_NOTE;
         static const float MAX_RPM;
+        static const float MAX_ACCELERATION;
         AccelStepper stepper;
 };

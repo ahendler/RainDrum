@@ -1,9 +1,9 @@
 #include <AccelStepper.h>
 
 // Hardware pins
-#define STEP_PIN 22
-#define DIR_PIN 23
-#define EN_PIN 19
+#define STEP_PIN 9
+#define DIR_PIN 8
+#define EN_PIN 7
 
 // Motor constants
 const int STEPS_PER_REV = 1600;
@@ -17,7 +17,7 @@ const float MAX_SPEED_STEPS = (STEPS_PER_REV * MAX_RPM) / 60.0;
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
 
 float currentAcceleration = 20000.0; // Start with a reasonable acceleration
-float accelerationIncrement = 1000.0;
+float accelerationIncrement = 5000.0;
 float maxTestAcceleration = 60000.0; // Upper limit to stop the test
 
 void setup() {

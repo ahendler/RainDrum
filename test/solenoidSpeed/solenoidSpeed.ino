@@ -1,5 +1,5 @@
-#define STICK_A 18
-#define STICK_B 17
+#define STICK_A 5
+#define STICK_B 6
 
 void setup() {
     pinMode(STICK_A, OUTPUT);

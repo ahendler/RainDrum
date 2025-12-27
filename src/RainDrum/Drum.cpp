@@ -1,12 +1,11 @@
 #include "Drum.h"
 
 // Hardware pins
-#define STEP_PIN 22
-#define DIR_PIN 23
-#define EN_PIN 19
-#define STICK_A 18
-#define STICK_B 17
-
+#define STEP_PIN 9
+#define DIR_PIN 8
+#define EN_PIN 7
+#define STICK_A 20
+#define STICK_B 21
 
 Drum::Drum() : stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN) {}
 
@@ -34,12 +33,12 @@ void Drum::moveToPosition(int targetDrumPosition) {
 
     if (stepsToMove != 0) {
         // Speed based on fixed time for movement for now
-        float requiredSpeed = abs(stepsToMove) / 0.2; // Move in 0.2 second
+        float requiredSpeed = abs(stepsToMove) / 0.15; // Move in 0.2 second
         // float maxSpeedSteps = (STEPS_PER_REV * MAX_RPM) / 60.0;
         // requiredSpeed = (requiredSpeed > maxSpeedSteps) ? maxSpeedSteps : requiredSpeed;
 
         stepper.setMaxSpeed(requiredSpeed);
-        // Use speed value x5 for acceleration, tune needed
+
         stepper.setAcceleration(MAX_ACCELERATION);
         long targetSteps = stepper.currentPosition() + stepsToMove;
         stepper.moveTo(targetSteps);
@@ -48,8 +47,8 @@ void Drum::moveToPosition(int targetDrumPosition) {
             stepper.run();
         }
     } else {
-        // Delay 200 ms to simulate the time taken for a movement
-        delay(200);
+        // Delay 150 ms to simulate the time taken for a movement
+        delay(150);
     }
     currentDrumPosition = targetDrumPosition; 
 }
@@ -69,4 +68,4 @@ void Drum::moveToPositionAndStrike(int position) {
 const int Drum::STEPS_PER_REV = 1600;
 const int Drum::STEPS_PER_NOTE = 200;
 const float Drum::MAX_RPM = 1500.0f; // irrelevant (acceleration-limited)
-const float Drum::MAX_ACCELERATION = 38000.0f; // steps/sec^2 - Measured to be between 40,000 and 48,000
+const float Drum::MAX_ACCELERATION = 42000.0f; // steps/sec^2 - Measured to be between 40,000 and 48,000

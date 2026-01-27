@@ -10,6 +10,7 @@ class Drum {
         void initialize();
     private:
         int currentDrumPosition = 0;
+        float minMoveTime;
         static const int STEPS_PER_REV;
         static const int STEPS_PER_NOTE;
         static const float MAX_RPM;

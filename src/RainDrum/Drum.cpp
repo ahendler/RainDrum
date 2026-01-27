@@ -19,9 +19,16 @@ void Drum::initialize() {
     // Configure stepper
     float maxSpeedSteps = (STEPS_PER_REV * MAX_RPM) / 60.0;
     stepper.setMaxSpeed(maxSpeedSteps);
-    stepper.setAcceleration(maxSpeedSteps * 2);
+    stepper.setAcceleration(MAX_ACCELERATION);
     // Enable motor
     digitalWrite(EN_PIN, LOW); //need to disable it later (positioning may drift)
+    // Calculate minMoveTime based on max acceleration
+    // We always start from rest and accelreate for half the distance, then decelerate
+    // t = sqrt(2(s/2)/a) * 2 = 2*sqrt(s/a)
+    // We also always want the movement to take the same time regardless of distance
+    // So our minMoveTime is based on the max distance (4 notes = 800 steps)
+    minMoveTime = 2.0 * sqrt( 800 / MAX_ACCELERATION );
+    // for a MAX_ACCELERATION of 45000, minMoveTime = 0.266s
 }
 
 void Drum::moveToPosition(int targetDrumPosition) {
@@ -30,26 +37,28 @@ void Drum::moveToPosition(int targetDrumPosition) {
     if (posToMove > 4) posToMove -= 8; // Choose shortest path
     int stepsToMove = posToMove * STEPS_PER_NOTE;
 
-
-    if (stepsToMove != 0) {
-        // Speed based on fixed time for movement for now
-        float requiredSpeed = abs(stepsToMove) / 0.15; // Move in 0.2 second
-        // float maxSpeedSteps = (STEPS_PER_REV * MAX_RPM) / 60.0;
-        // requiredSpeed = (requiredSpeed > maxSpeedSteps) ? maxSpeedSteps : requiredSpeed;
-
-        stepper.setMaxSpeed(requiredSpeed);
-
-        stepper.setAcceleration(MAX_ACCELERATION);
-        long targetSteps = stepper.currentPosition() + stepsToMove;
-        stepper.moveTo(targetSteps);
-
-        while (stepper.distanceToGo() != 0) {
-            stepper.run();
-        }
-    } else {
-        // Delay 150 ms to simulate the time taken for a movement
-        delay(150);
+    // Base case, no movement needed
+    if (stepsToMove == 0) {
+        delay(minMoveTime * 1000); // Delay minMoveTime to keep timing consistent
+        return;
     }
+
+    // Max speed isn't relevant since we are acceleration-limited
+    // Set it to a high value to avoid limiting the motion
+    stepper.setMaxSpeed(MAX_RPM * STEPS_PER_REV / 60.0);
+
+    // Calculate required acceleration to complete move in minMoveTime
+    // a = 4s/t^2
+    float requiredAcceleration = (4.0 * abs(stepsToMove)) / (minMoveTime * minMoveTime);
+
+    stepper.setAcceleration(requiredAcceleration);
+    long targetSteps = stepper.currentPosition() + stepsToMove;
+    stepper.moveTo(targetSteps);
+
+    while (stepper.distanceToGo() != 0) {
+        stepper.run();
+    }
+
     currentDrumPosition = targetDrumPosition; 
 }
 
@@ -67,5 +76,5 @@ void Drum::moveToPositionAndStrike(int position) {
 
 const int Drum::STEPS_PER_REV = 1600;
 const int Drum::STEPS_PER_NOTE = 200;
-const float Drum::MAX_RPM = 1500.0f; // irrelevant (acceleration-limited)
-const float Drum::MAX_ACCELERATION = 42000.0f; // steps/sec^2 - Measured to be between 40,000 and 48,000
+const float Drum::MAX_RPM = 3000.0f; // irrelevant (acceleration-limited)
+const float Drum::MAX_ACCELERATION = 45000.0f; // steps/sec^2 - Measured to be between 40,000 and 48,000

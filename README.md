@@ -3,9 +3,9 @@
 Spun by a NEMA 17 stepper motor and hit by a mallet attached to a solenoid, controlled by an ESP32-C3 microcontroller via BLE MIDI.
 
 <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
-  <img src="assets/exploded.png" alt="Exploded View" width="300"/>
-  <img src="assets/playing.gif" alt="Rain Drum Bot" width="300"/>
-  <img src="assets/see_through.png" alt="See Through" width="300"/>
+  <img src="assets/exploded.png" alt="Exploded View" width="200"/>
+  <img src="assets/playing.gif" alt="Rain Drum Bot" width="200"/>
+  <img src="assets/see_through.png" alt="See Through" width="200"/>
 </div>
 
 ## Repo structure

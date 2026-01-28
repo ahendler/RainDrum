@@ -16,4 +16,6 @@
 
 ## Misc
 - Mini Steel tongue drum "Rain Drum" with drumstick ([AliExpress](https://a.aliexpress.com/_mKWVIeN))
-- Rubber Feet (4x)
+- Nylon string
+- Rubber Feet
+- Mini hair rubber bands (for solenoid return)
